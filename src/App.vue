@@ -1,26 +1,53 @@
 <script setup lang="ts">
-import HelloWorld from "./components/HelloWorld.vue";
-import TheWelcome from "./components/TheWelcome.vue";
+import { computed, onMounted, ref } from "vue";
+import ProductList from "./components/ProductList.vue";
+import HeroProduct from "./components/HeroProduct.vue";
+import type { ProductData } from "@/types/ProductData";
+
+onMounted(() => {
+  fetchData();
+});
+
+const productData = ref<ProductData>();
+
+const productOfTheDay = computed(() => {
+  return productData.value?.productOfTheDay;
+});
+const lists = computed(() => {
+  if (!productData?.value) {
+    return;
+  }
+  const { bestSales, recommendedForYou } = productData.value;
+  return { bestSales, recommendedForYou };
+});
+
+const fetchData = async () => {
+  const response = await fetch("http://localhost:3001/", {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json;charset=UTF-8",
+    },
+  });
+
+  if (response.status != 200) {
+    throw response.status;
+  }
+
+  productData.value = await response.json();
+};
 </script>
 
 <template>
-  <header>
-    <img
-      alt="Vue logo"
-      class="logo"
-      src="./assets/logo.svg"
-      width="125"
-      height="125"
+  <div>
+    <HeroProduct v-if="productOfTheDay" :productData="productOfTheDay" />
+    <ProductList
+      v-for="(products, category, index) in lists"
+      :category="category"
+      :products="products"
+      :key="index"
     />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  </div>
 </template>
 
 <style scoped>
