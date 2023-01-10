@@ -19,9 +19,7 @@ const props = defineProps<{
   productData: Product;
 }>();
 
-const { image, name, price, amount, rating, badges, addedToWishlist } = toRefs(
-  props.productData
-);
+const { name, price, badges } = toRefs(props.productData);
 </script>
 
 <style lang="scss" scoped>

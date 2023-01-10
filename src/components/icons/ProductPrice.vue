@@ -1,7 +1,9 @@
 <template>
   <div class="product-price">
     <p v-if="isOnSale" class="product-price__price--old">{{ regular }}</p>
-    <p :class="`product-price__price${isOnSale && '--promotion'}`">{{ current }}</p>
+    <p :class="`product-price__price${isOnSale && '--promotion'}`">
+      {{ current }}
+    </p>
   </div>
 </template>
 
@@ -37,6 +39,4 @@ const isOnSale = computed(() => {
     }
   }
 }
-
-
 </style>
